@@ -1,24 +1,40 @@
-W = 800;
-H = 600;
+var W = 1200;
+var H = 800;
+var lines = [];
+var num_lines = 4;
 
 function setup() {
   createCanvas(W, H);
-  l1 = new Line(W/2, H/2, 120, PI, 0.35);
-  l2 = new Line(l1.x2, l1.y2, 35, PI/2, -0.25);
-  l3 = new Line(l2.x2, l1.y2, 25, PI/3, 0.33);
-  l4 = new Line(l3.x2, l3.y2, 55, PI/4, 0.5);
+  for (let i = 0; i < num_lines; i++) {
+    if (i==0) {
+      width = W/2;
+      height = H/2;
+    } else {
+      width = lines[i-1].x2;
+      height = lines[i-1].y2;
+    }
+    length = random(1) * 200;
+    angle = random(1) * PI;
+    frequency = random(1) * 2 - 1;
+    lines.push(new Line(width, height, length, angle, frequency));
+  }
+
 }
 
 function draw() {
   background(255);
-  l1.update();
-  l1.draw();
-  l2.update(l1);
-  l2.draw(0);
-  l3.update(l2);
-  l3.draw();
-  l4.update(l3);
-  l4.draw(1);
+  for (let i = 0; i < num_lines; i++) {
+    if (i==0) {
+      lines[i].update();
+      lines[i].draw();
+    } else if (i==num_lines-1) {
+      lines[i].update(lines[i-1]);
+      lines[i].draw(1);
+    } else {
+      lines[i].update(lines[i-1]);
+      lines[i].draw();
+    }
+  }
 }
 
 
@@ -57,7 +73,7 @@ class Line {
       vertex(this.history[i].x, this.history[i].y);
     }
     endShape();
-    stroke(150);
+    stroke(100);
     line(this.x1, this.y1, this.x2, this.y2);
   }
 }
