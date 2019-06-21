@@ -80,14 +80,21 @@ class Line {
     if (last) {
       this.history.push(createVector(this.x2, this.y2));
       this.wave.push(createVector(elapsed, this.y2));
+      if (this.history.length > 510) { 
+        this.history.splice(0, 1);
+        this.wave.splice(0, 1);
+      }
     }
     noFill();
+    
+
 
     beginShape(LINES);
     for (let i = 0; i < this.history.length; i++) {
       let zero = elapsed - 255 * 2;
-      let alpha = i - zero;
-      stroke(this.color[0], this.color[1], this.color[2], alpha*0.5);
+      if (zero > 0) { zero = 0 }
+      let alpha = (i - zero) * 0.5;
+      stroke(this.color[0], this.color[1], this.color[2], alpha);
       vertex(W*0.33 - elapsed + this.wave[i].x, this.wave[i].y);
       if (i>0) {
         vertex(W*0.33 - elapsed + this.wave[i-1].x, this.wave[i-1].y);
@@ -97,9 +104,10 @@ class Line {
 
     beginShape(LINES);
     for (let i = 0; i < this.history.length; i++) {
-      let zero = elapsed - 255 * 2;
-      let alpha = i - zero;
-      stroke(this.color[0], this.color[1], this.color[2], alpha*0.5);
+      let zero = elapsed - 255 * 2; 
+      if (zero > 0) { zero = 0 }
+      let alpha = (i - zero) * 0.5;
+      stroke(this.color[0], this.color[1], this.color[2], alpha);
       vertex(this.history[i].x, this.history[i].y);
       if (i>0) {
         vertex(this.history[i-1].x, this.history[i-1].y);
@@ -107,6 +115,7 @@ class Line {
     }
     endShape();
 
+    
     stroke(100);
     line(this.x1, this.y1, this.x2, this.y2);
   }
